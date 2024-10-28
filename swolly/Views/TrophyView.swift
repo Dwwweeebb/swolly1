@@ -62,42 +62,6 @@ struct CompetitionForm: View {
     }
 }
 
-struct CompetitionEditForm: View {
-    @Binding var competition: Competition
-    @Binding var competitions: [Competition]
-    @Environment(\.dismiss) var dismiss
-    @State private var name: String
-    @State private var startDate: Date
-    @State private var endDate: Date
-
-    init(competition: Competition, competitions: Binding<[Competition]>) {
-        _competition = Binding.constant(competition)
-        _competitions = competitions
-        _name = State(initialValue: competition.name)
-        _startDate = State(initialValue: competition.startDate)
-        _endDate = State(initialValue: competition.endDate)
-    }
-
-    var body: some View {
-        NavigationView {
-            Form {
-                TextField("Competition Name", text: $name)
-                DatePicker("Start Date", selection: $startDate, displayedComponents: .date)
-                DatePicker("End Date", selection: $endDate, displayedComponents: .date)
-                Button("Save Changes") {
-                    if let index = competitions.firstIndex(where: { $0.id == competition.id }) {
-                        competitions[index].name = name
-                        competitions[index].startDate = startDate
-                        competitions[index].endDate = endDate
-                    }
-                    dismiss()
-                }
-            }
-            .navigationBarTitle("Edit Competition", displayMode: .inline)
-        }
-    }
-}
-
 struct JoinCompetitionView: View {
     @Binding var competitions: [Competition]
     @State private var joinCode = ""

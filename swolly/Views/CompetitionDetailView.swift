@@ -6,6 +6,7 @@ struct CompetitionDetailView: View {
     var competition: Competition
     var participantCount: Int
     @Environment(\.presentationMode) var presentationMode
+    @State private var showingEditForm = false  // State to control navigation
 
     var body: some View {
         NavigationView {
@@ -25,7 +26,7 @@ struct CompetitionDetailView: View {
                 if competition.isCreator {
                     Section {
                         Button("Edit") {
-                            // Navigate to an edit form or enable editing mode
+                            showingEditForm = true
                         }
                         Button("Delete", role: .destructive) {
                             deleteCompetition()
@@ -34,6 +35,12 @@ struct CompetitionDetailView: View {
                 }
             }
             .navigationBarTitle(Text(competition.name), displayMode: .inline)
+            .sheet(isPresented: $showingEditForm) {
+                // Corrected: Pass only the necessary binding to the competition object
+                if let index = competitions.firstIndex(where: { $0.id == competition.id }) {
+                    CompetitionEditForm(competition: $competitions[index])
+                }
+            }
         }
     }
 
