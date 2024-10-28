@@ -1,19 +1,9 @@
 import SwiftUI
 
-struct Competition: Identifiable {
-    let id = UUID()
-    var name: String
-    var startDate: Date
-    var endDate: Date
-    var isCreator: Bool // To check if the current user is the creator
-    var joinCode: String  // Unique code to join the competition
-}
-
 struct TrophyView: View {
     @State private var competitions: [Competition] = []
     @State private var showingCreateCompetition = false
     @State private var showingJoinCompetition = false
-    @State private var editingCompetition: Competition?
 
     var body: some View {
         NavigationView {
@@ -27,13 +17,10 @@ struct TrophyView: View {
                     }
                 } else {
                     ForEach(competitions) { competition in
-                        VStack(alignment: .leading) {
-                            Text(competition.name)
-                            Text("From \(competition.startDate, formatter: dateFormatter) to \(competition.endDate, formatter: dateFormatter)")
-                            if competition.isCreator {
-                                Button("Edit") {
-                                    editingCompetition = competition
-                                }
+                        NavigationLink(destination: CompetitionDetailView(competitions: $competitions, competition: competition, participantCount: 5)) {
+                            VStack(alignment: .leading) {
+                                Text(competition.name)
+                                Text("From \(competition.startDate, formatter: dateFormatter) to \(competition.endDate, formatter: dateFormatter)")
                             }
                         }
                     }
@@ -45,9 +32,6 @@ struct TrophyView: View {
             }
             .sheet(isPresented: $showingJoinCompetition) {
                 JoinCompetitionView(competitions: $competitions)
-            }
-            .sheet(item: $editingCompetition) { comp in
-                CompetitionEditForm(competition: comp, competitions: $competitions)
             }
         }
     }
